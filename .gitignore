@@ -1,0 +1,14 @@
+# Respaldo local de fotos originales (pesado, no va al repo)
+megajardines-imagenes-originales/
+
+# Configuración local del editor / sesión
+.claude/
+
+# Secretos del bot
+.env
+megajardines-bot/.env
+
+# Sistema
+Thumbs.db
+desktop.ini
+.DS_Store

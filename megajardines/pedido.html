@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pedido | Mega Jardines</title>
+  <meta name="description" content="Pedido de plantas, macetas y piedras decorativas en Mega Jardines, Quito.">
+  <meta name="robots" content="noindex">
+  <!-- Vista previa en WhatsApp / redes. Si el dominio cambia, actualizar estas URL absolutas. -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Mega Jardines">
+  <meta property="og:title" content="Mi pedido en Mega Jardines 🌿">
+  <meta property="og:description" content="Plantas, macetas y piedras decorativas en Quito. Mira el pedido con fotos y precios.">
+  <meta property="og:image" content="https://juannorab.github.io/mega_jardines/img/og-pedido.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:url" content="https://juannorab.github.io/mega_jardines/pedido.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="img/logo-jardines.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
+  <style>
+    .order { max-width: 760px; margin: 0 auto; }
+    .order__list { list-style: none; padding: 0; margin: 0 0 8px; background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+    .order__item { display: grid; grid-template-columns: 96px 1fr auto; gap: 16px; align-items: center; padding: 16px; border-bottom: 1px solid var(--line); }
+    .order__item:last-child { border-bottom: 0; }
+    .order__item img, .order__item .cart__noimg { width: 96px; height: 96px; border-radius: 12px; object-fit: cover; cursor: zoom-in; }
+    .order__name { font-weight: 600; }
+    .order__meta { color: var(--muted); font-size: .9rem; }
+    .order__sub { font-family: "Fraunces", serif; font-size: 1.2rem; color: var(--green-700); text-align: right; }
+    .order__total { display: flex; justify-content: space-between; align-items: baseline; padding: 20px 4px; font-size: 1.1rem; }
+    .order__total strong { font-family: "Fraunces", serif; font-size: 2rem; color: var(--green-700); text-align: right; }
+    .order__total small { display: block; font-family: "Inter", sans-serif; font-size: .8rem; color: var(--muted); font-weight: 500; }
+    .order__actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .order__missing { color: #b23b3b; font-size: .9rem; margin-top: 8px; }
+    @media (max-width: 520px) {
+      .order__item { grid-template-columns: 72px 1fr; }
+      .order__item img, .order__item .cart__noimg { width: 72px; height: 72px; }
+      .order__sub { grid-column: 2; text-align: left; font-size: 1.05rem; }
+    }
+  </style>
+</head>
+<body data-page="pedido">
+  <div id="site-header"></div>
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <div class="crumbs"><a href="index.html">Inicio</a> / Pedido</div>
+        <h1>🌿 Pedido Mega Jardines</h1>
+        <p id="order-sub">Detalle del pedido con fotos y precios referenciales.</p>
+      </div>
+    </section>
+    <section class="section section--sand">
+      <div class="container order" id="order"></div>
+    </section>
+  </main>
+  <div id="site-footer"></div>
+
+  <script src="assets/data.js"></script>
+  <script src="assets/app.js"></script>
+  <script src="assets/cart.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const fmt = (n) => "$" + Number(n).toFixed(2);
+      const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+      const byId = {};
+      window.MJ_DATA.products.forEach((p) => { byId[p.id] = p; });
+
+      // ?p=97x3,98x1,abono-0x2
+      const raw = new URLSearchParams(location.search).get("p") || "";
+      const rows = [];
+      let missing = 0;
+      raw.split(",").filter(Boolean).forEach((part) => {
+        const m = part.match(/^([\w-]+)x(\d{1,3})$/);
+        if (!m) return;
+        const [, id, q] = m;
+        let p = byId[id];
+        if (!p && id.startsWith("abono-")) {
+          const name = MJ.supplies[+id.slice(6)];
+          if (name) p = { id, n: name, p: 0, img: "", g: "abonos" };
+        }
+        if (p) rows.push({ ...p, q: Math.max(1, +q) });
+        else missing++;
+      });
+
+      const box = document.getElementById("order");
+      if (!rows.length) {
+        box.innerHTML = `<div class="empty">Este enlace no tiene productos. <a href="productos.html">Ver el catálogo</a></div>`;
+        return;
+      }
+      const total = rows.reduce((s, r) => s + r.p * r.q, 0);
+      const unpriced = rows.some((r) => !(r.p > 0));
+      const units = rows.reduce((s, r) => s + r.q, 0);
+      document.getElementById("order-sub").textContent =
+        `${units} artículo${units === 1 ? "" : "s"} · total referencial ${fmt(total)}${unpriced ? " + productos a consultar" : ""}`;
+
+      box.innerHTML = `
+        <ul class="order__list">
+          ${rows.map((r, i) => `
+            <li class="order__item">
+              ${r.img ? `<img src="${r.img}" alt="${esc(r.n)}" data-i="${i}">` : `<div class="cart__noimg"></div>`}
+              <div>
+                <div class="order__name">${esc(r.n)}</div>
+                <div class="order__meta">${r.q} × ${r.p > 0 ? fmt(r.p) : "precio a consultar"}${!String(r.id).startsWith("abono-") ? ` · cód. ${r.id}` : ""}</div>
+              </div>
+              <div class="order__sub">${r.p > 0 ? fmt(r.p * r.q) : "—"}</div>
+            </li>`).join("")}
+        </ul>
+        ${missing ? `<p class="order__missing">${missing} producto(s) del pedido ya no están en el catálogo.</p>` : ""}
+        <div class="order__total"><span>Total referencial</span>
+          <strong>${fmt(total)}${unpriced ? "<small>+ productos a consultar</small>" : ""}</strong></div>
+        <p class="cart__note">Precios referenciales en USD. La disponibilidad, el costo de envío y la forma de pago se confirman por WhatsApp.</p>
+        <div class="order__actions">
+          <button class="btn btn--primary" id="reorder">Agregar estos productos a mi pedido</button>
+          <a class="btn btn--wa" href="${waLink("Hola Mega Jardines, les escribo por este pedido: " + location.href)}">Escribir por WhatsApp</a>
+        </div>`;
+
+      box.addEventListener("click", (e) => {
+        const img = e.target.closest("img[data-i]");
+        if (img) Lightbox.open(rows.filter((r) => r.img).map((r) => r.img), rows.filter((r) => r.img).indexOf(rows[+img.dataset.i]), rows.filter((r) => r.img).map((r) => r.n));
+        if (e.target.id === "reorder") {
+          rows.forEach((r) => Cart.add(r, r.q));
+          Cart.open();
+        }
+      });
+      track("view_shared_order", { value: total, items: rows.length });
+    });
+  </script>
+</body>
+</html>

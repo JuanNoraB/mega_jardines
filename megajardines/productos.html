@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Productos | Mega Jardines Quito</title>
+  <meta name="description" content="Catálogo de plantas, árboles, flores, orquídeas, bonsáis, cactus, macetas, piedras decorativas, tierras y abonos con precios. Pide por WhatsApp en Quito.">
+  <link rel="icon" href="img/logo-jardines.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body data-page="productos">
+  <div id="site-header"></div>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <div class="crumbs"><a href="index.html">Inicio</a> / Productos</div>
+        <h1>Catálogo de productos</h1>
+        <p>Explora nuestras plantas, macetas y piedras decorativas con precios actualizados. Elige lo que te gusta y pídelo directamente por WhatsApp.</p>
+      </div>
+    </section>
+
+    <section class="section" id="catalogo" style="scroll-margin-top:80px">
+      <div class="container catalog">
+        <aside class="filters" id="filters" aria-label="Categorías"></aside>
+        <div>
+          <h2 id="cat-title" style="font-size:1.8rem">Todo el catálogo</h2>
+          <div class="toolbar">
+            <button class="btn btn--outline filters-toggle" id="filters-toggle">Categorías</button>
+            <input id="search" type="search" placeholder="Buscar: orquídea, bonsái, maceta..." aria-label="Buscar productos">
+            <select id="sort" aria-label="Ordenar">
+              <option value="name">Orden A–Z</option>
+              <option value="low">Precio: menor a mayor</option>
+              <option value="high">Precio: mayor a menor</option>
+            </select>
+          </div>
+          <div class="result-count" id="count"></div>
+          <div class="products" id="grid"></div>
+          <div class="load-more"><button class="btn btn--primary" id="more">Ver más productos</button></div>
+          <p style="color:var(--muted);font-size:.88rem;margin-top:24px">Precios referenciales en dólares (USD). La disponibilidad puede variar; confirma tu pedido por WhatsApp.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="assets/data.js"></script>
+  <script src="assets/app.js"></script>
+  <script src="assets/cart.js"></script>
+  <script src="assets/catalog.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      initCatalog();
+    });
+  </script>
+</body>
+</html>

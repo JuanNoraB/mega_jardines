@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Servicios de jardinería | Mega Jardines Quito</title>
+  <meta name="description" content="Mantenimiento, diseño y construcción de jardines, control de plagas, fertilización y sistemas de riego en Quito. Cotiza gratis por WhatsApp.">
+  <link rel="icon" href="img/logo-jardines.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body data-page="servicios">
+  <div id="site-header"></div>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <div class="crumbs"><a href="index.html">Inicio</a> / Servicios</div>
+        <h1>Servicios de jardinería</h1>
+        <p>Un equipo que diseña, construye y mantiene jardines residenciales y corporativos. Mira nuestros trabajos reales y pide tu cotización sin costo.</p>
+        <div class="service-nav">
+          <a href="#mantenimiento">Mantenimiento</a>
+          <a href="#diseno">Diseño</a>
+          <a href="#construccion">Construcción</a>
+          <a href="#plagas">Plagas y fertilización</a>
+          <a href="#riego">Riego</a>
+        </div>
+      </div>
+    </section>
+
+    <div class="container" id="services"></div>
+
+    <section class="section section--sand">
+      <div class="container">
+        <div class="cta">
+          <div>
+            <h2>Cotiza tu proyecto hoy</h2>
+            <p>Envíanos fotos de tu espacio por WhatsApp y te damos una propuesta a medida.</p>
+          </div>
+          <a class="btn btn--wa" data-wa="Hola Mega Jardines, quisiera cotizar un servicio de jardinería.">Escribir por WhatsApp</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="assets/data.js"></script>
+  <script src="assets/app.js"></script>
+  <script src="assets/cart.js"></script>
+  <script>
+    const SERVICES = [
+      {
+        id: "mantenimiento", title: "Mantenimiento de jardines",
+        text: "Mantén tu jardín sano y ordenado todo el año. Programamos visitas semanales, quincenales o mensuales según lo que tu espacio necesite.",
+        items: ["Corte y perfilado de césped", "Poda y formación de arbustos y setos", "Poda y limpieza de flores", "Poda de árboles", "Limpieza y poda de palmeras"],
+        imgs: ["pcesped", "parbustos", "pflores", "parboles", "ppalmeras"],
+      },
+      {
+        id: "diseno", title: "Diseño de jardines",
+        text: "Creamos jardines pensados para tu estilo de vida, la luz y el clima de tu espacio, con plantas que se adaptan y lucen bien con poco esfuerzo.",
+        items: ["Jardines de interior", "Jardines naturales", "Jardines coloridos con flores", "Jardines secos de bajo consumo de agua", "Jardines verticales y muros verdes", "Estanques y fuentes"],
+        imgs: ["jnatural", "jinterior", "jcolorido", "estanques"],
+      },
+      {
+        id: "construccion", title: "Construcción de jardines",
+        text: "Hacemos realidad tu proyecto de principio a fin: desde preparar el terreno hasta la última planta, con materiales de nuestro propio vivero.",
+        items: ["Preparación y nivelación del terreno", "Aporte de tierra negra y sustratos", "Siembra de césped, plantas y árboles", "Caminerías y acabados con piedra decorativa", "Entrega llave en mano"],
+        imgs: ["construccion"],
+      },
+      {
+        id: "plagas", title: "Control de plagas y fertilización",
+        text: "Protegemos tus plantas de insectos y hongos y les damos la nutrición que necesitan para crecer fuertes y con buen color.",
+        items: ["Fumigación contra insectos", "Tratamiento de hongos y enfermedades", "Fertilización y abonado", "Diagnóstico del estado de tus plantas"],
+        imgs: ["insectos", "hongos"],
+      },
+      {
+        id: "riego", title: "Sistemas de riego",
+        text: "Diseñamos e instalamos sistemas de riego que ahorran agua y tiempo, para que tu jardín reciba la cantidad justa aunque no estés en casa.",
+        items: ["Diseño del sistema según tu jardín", "Riego por aspersión y por goteo", "Programación automática", "Revisión y mantenimiento del sistema"],
+        imgs: ["riegos"],
+      },
+    ];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const g = window.MJ_DATA.services;
+      const root = document.getElementById("services");
+      root.innerHTML = SERVICES.map((s) => {
+        const all = s.imgs.flatMap((k) => g[k] || []);
+        s.all = all;
+        return `
+        <section class="service" id="${s.id}">
+          <div class="service__media">
+            ${all.slice(0, 3).map((src, i) => `<img src="${src}" alt="${s.title} - trabajo ${i + 1}" loading="lazy" data-s="${s.id}" data-i="${i}">`).join("")}
+          </div>
+          <div>
+            <span class="eyebrow">Servicio</span>
+            <h2>${s.title}</h2>
+            <p class="lead">${s.text}</p>
+            <ul class="checklist">${s.items.map((i) => `<li>${i}</li>`).join("")}</ul>
+            <a class="btn btn--wa" href="${waLink(`Hola, quisiera cotizar: ${s.title}.`)}">Cotizar este servicio</a>
+            ${all.length > 3 ? `<button class="service__more" data-s="${s.id}" data-i="0">Ver ${all.length} fotos →</button>` : ""}
+          </div>
+        </section>`;
+      }).join("");
+      root.addEventListener("click", (e) => {
+        const t = e.target.closest("[data-s]");
+        if (!t) return;
+        const s = SERVICES.find((x) => x.id === t.dataset.s);
+        Lightbox.open(s.all, +t.dataset.i, s.all.map(() => s.title));
+      });
+      if (location.hash) document.querySelector(location.hash)?.scrollIntoView();
+    });
+  </script>
+</body>
+</html>
