@@ -70,7 +70,8 @@ if ($Csv) {
   Write-Host "Leyendo $Csv"
 } else {
   Write-Host "Descargando la hoja de Google..."
-  $r = Download "https://docs.google.com/spreadsheets/d/$HojaId/export?format=csv"
+  # gid=0 es la pestaña "Inventario" (la pestaña "Listas" solo alimenta los desplegables)
+  $r = Download "https://docs.google.com/spreadsheets/d/$HojaId/export?format=csv&gid=0"
   $text = [Text.Encoding]::UTF8.GetString($r.bytes)
   if ($text -match '<html') { throw "No se pudo leer la hoja. Revisa que esté compartida como 'Cualquier persona con el enlace puede ver'." }
 }
