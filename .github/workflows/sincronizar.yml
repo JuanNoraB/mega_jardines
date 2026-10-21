@@ -24,6 +24,7 @@ concurrency:
 jobs:
   sync:
     runs-on: windows-latest     # el script usa PowerShell + System.Drawing (Windows)
+    timeout-minutes: 20         # si algo se cuelga, se corta y GitHub avisa
     outputs:
       changed: ${{ steps.commit.outputs.changed }}
     steps:
