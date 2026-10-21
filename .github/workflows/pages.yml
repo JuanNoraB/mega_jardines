@@ -7,6 +7,7 @@ on:
       - "megajardines/**"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
+  workflow_call:      # lo usa sincronizar.yml después de actualizar el inventario
 
 permissions:
   contents: read
@@ -25,6 +26,8 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main     # siempre la última versión (incluye el commit de la sincronización)
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

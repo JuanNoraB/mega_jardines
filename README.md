@@ -9,12 +9,20 @@ Web de Mega Jardines (vivero y jardinería en Quito).
 | `sincronizar.ps1` | Trae el inventario desde Google Sheets y las fotos nuevas desde Drive hacia la web y el bot. |
 
 ## Actualizar el catálogo
-1. Editar la hoja **Inventario_megajardines** (activo `si`/`no`, precios, productos nuevos).
-2. En esta carpeta:
+Es **automático**: todas las madrugadas (3:00, hora de Quito) GitHub Actions corre `sincronizar.ps1`
+(`.github/workflows/sincronizar.yml`), guarda los cambios en el repo y publica la web. Si no hubo cambios, no hace nada.
+Basta con editar la hoja **Inventario_megajardines** (activo `si`/`no`, precios, productos nuevos).
+
+Para no esperar a la madrugada: en GitHub, pestaña **Actions → Sincronizar inventario → Run workflow**.
+
+Si la sincronización falla (hoja vacía, columna borrada, foto no pública), GitHub avisa por correo y la web se queda como estaba.
+
+### Manual (desde una computadora)
+1. En esta carpeta:
    ```
    powershell -ExecutionPolicy Bypass -File sincronizar.ps1
    ```
-3. Subir los cambios:
+2. Subir los cambios:
    ```
    git add -A
    git commit -m "Actualizar inventario"

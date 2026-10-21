@@ -1,0 +1,55 @@
+name: Sincronizar inventario (cada madrugada)
+
+# Lee la hoja de Google y las fotos nuevas de Drive, actualiza la web y el bot,
+# guarda los cambios en el repo y publica la web. Si no hubo cambios, no hace nada.
+on:
+  schedule:
+    - cron: "0 8 * * *"        # 08:00 UTC = 03:00 en Quito
+  workflow_dispatch:            # botón "Run workflow" para correrlo a mano
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/sincronizar.yml"
+      - "sincronizar.ps1"
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: sincronizar
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: windows-latest     # el script usa PowerShell + System.Drawing (Windows)
+    outputs:
+      changed: ${{ steps.commit.outputs.changed }}
+    steps:
+      - name: Mantener fin de línea LF
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@v4
+      - name: Sincronizar desde Google Sheets y Drive
+        shell: powershell
+        run: .\sincronizar.ps1
+      - name: Guardar cambios en el repo
+        id: commit
+        shell: bash
+        run: |
+          git add -A megajardines megajardines-bot
+          if git diff --cached --quiet; then
+            echo "Sin cambios en el inventario."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "Inventario actualizado automáticamente ($(date -u +%Y-%m-%d))"
+            git push
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  publicar:
+    needs: sync
+    if: needs.sync.outputs.changed == 'true'
+    uses: ./.github/workflows/pages.yml
