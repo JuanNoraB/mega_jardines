@@ -9,7 +9,7 @@ const MJ = {
   facebook: "https://www.facebook.com/Megajardinesuio-160937375713184/",
   logo: "img/logo-jardines.png",
   // Google Analytics 4: pega aquí el "ID de medición" (G-XXXXXXXXXX). Vacío = sin métricas.
-  ga4Id: "",
+  ga4Id: "G-4PQ9VV81BM",
   // Tierras y abonos (sin precio fijo): se piden como "precio a consultar"
   supplies: ["Tierra negra", "Tierra preparada", "Humus", "Abono de champiñón",
     "Arena de río lavada", "Cascajo de coco", "Cascajo de pomes", "Aireadores"],

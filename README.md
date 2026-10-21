@@ -261,7 +261,7 @@ git push
 
 ## 10. Pendientes
 
-- [ ] ID de Google Analytics (`G-…`) en `assets/app.js`.
+- [x] Google Analytics activo (`G-4PQ9VV81BM` en `assets/app.js`). Informes en analytics.google.com, propiedad *megajardines*.
 - [ ] RUC y dirección en `terminos.html` y `privacidad.html` (buscar `[completar]`).
 - [ ] Copiar las fotos de `megajardines/img/productos/` a la carpeta de Drive *Inventario_imagenes* (opcional, para que el dueño las tenga a mano).
 - [ ] Recuperar el dominio megajardines.com y apuntarlo a GitHub Pages (Settings → Pages → Custom domain).
