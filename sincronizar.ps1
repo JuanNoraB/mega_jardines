@@ -151,7 +151,19 @@ Write-Host "Activos: $($products.Count)   Inactivos: $inactive   Fotos nuevas: $
 if ($Simular) { Write-Host "(simulación: no se escribió nada)"; $warn | ForEach-Object { Write-Warning $_ }; return }
 
 $json = $data | ConvertTo-Json -Depth 8 -Compress
-[IO.File]::WriteAllText("$site\assets\data.js", "// Generado por sincronizar.ps1 desde Google Sheets. No editar a mano.`nwindow.MJ_DATA = $json;`n", $enc)
+$newJs = "// Generado por sincronizar.ps1 desde Google Sheets. No editar a mano.`nwindow.MJ_DATA = $json;`n"
+$oldJs = if (Test-Path "$site\assets\data.js") { [IO.File]::ReadAllText("$site\assets\data.js", $enc) } else { "" }
+[IO.File]::WriteAllText("$site\assets\data.js", $newJs, $enc)
+# Si el catálogo cambió, se marca una versión nueva en las páginas para que los
+# navegadores no muestren precios viejos guardados en caché.
+if ($newJs -ne $oldJs) {
+  $ver = (Get-Date).ToUniversalTime().ToString("yyyyMMddHHmm")
+  foreach ($page in Get-ChildItem $site -Filter *.html) {
+    $html = [IO.File]::ReadAllText($page.FullName, $enc)
+    $upd = [regex]::Replace($html, 'assets/data\.js(\?v=\d+)?"', "assets/data.js?v=$ver`"")
+    if ($upd -ne $html) { [IO.File]::WriteAllText($page.FullName, $upd, $enc) }
+  }
+}
 [IO.File]::WriteAllLines("$site\data\inventario.csv", [string[]]($all | ConvertTo-Csv -NoTypeInformation), $enc)
 ($cache | ConvertTo-Json) | ForEach-Object { [IO.File]::WriteAllText($cacheFile, $_, $enc) }
 $bot = Join-Path $root "megajardines-bot\data\productos.csv"
