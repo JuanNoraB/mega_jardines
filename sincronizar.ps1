@@ -110,7 +110,10 @@ foreach ($row in $rows) {
 
   # foto: archivo local o enlace de Drive / URL
   $img = ""
-  if ($foto -match '^https?://') {
+  if ($foto -match '^https?://' -and -not (DriveId $foto)) {
+    # Solo se aceptan enlaces de Google Drive (evita descargar cualquier archivo de internet)
+    $warn.Add("$codigo : la foto debe ser un enlace de Google Drive (se ignoró '$foto')")
+  } elseif ($foto -match '^https?://') {
     $id = DriveId $foto
     $dest = Join-Path $fotos "$codigo.jpg"
     $key = if ($id) { $id } else { $foto }

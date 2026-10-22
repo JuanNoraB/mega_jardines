@@ -1,18 +1,20 @@
 // Tarjetas de producto y lógica del catálogo (filtros, búsqueda, orden).
 const money = (n) => (n > 0 ? "$" + n.toFixed(2) : "Consultar");
+// Escapa texto que viene de la hoja (nombres, descripciones, categorías) antes de ponerlo en el HTML
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
 function renderProducts(container, list) {
   container.innerHTML = list.map((p, i) => `
     <article class="product">
-      <div class="product__img${p.img ? "" : " product__img--none"}"><img src="${p.img || MJ.logo}" alt="${p.n}" loading="lazy"${p.img ? ` data-i="${i}"` : ""}></div>
+      <div class="product__img${p.img ? "" : " product__img--none"}"><img src="${p.img || MJ.logo}" alt="${esc(p.n)}" loading="lazy"${p.img ? ` data-i="${i}"` : ""}></div>
       <div class="product__body">
-        <div class="product__name">${p.n}</div>
-        ${p.d ? `<div class="product__desc">${p.d}</div>` : ""}
+        <div class="product__name">${esc(p.n)}</div>
+        ${p.d ? `<div class="product__desc">${esc(p.d)}</div>` : ""}
         <div class="product__price">${money(p.p)}</div>
         <div class="product__buy" data-i="${i}">
           <div class="qty">
             <button type="button" data-dec aria-label="Menos">−</button>
-            <input type="number" min="1" max="999" value="1" aria-label="Cantidad de ${p.n}">
+            <input type="number" min="1" max="999" value="1" aria-label="Cantidad de ${esc(p.n)}">
             <button type="button" data-inc aria-label="Más">+</button>
           </div>
           <button type="button" class="btn btn--primary" data-add>Agregar al pedido</button>
@@ -50,9 +52,9 @@ function initCatalog() {
     d.tree.map((grp) => {
       const n = d.products.filter((p) => p.g === grp.g).length;
       const cats = grp.cats.filter((c) => c.count > 0);
-      return `<h4>${grp.label}</h4>
-        <button data-g="${grp.g}" data-c="">Todas las ${grp.label.toLowerCase()} <small>${n}</small></button>` +
-        (cats.length > 1 ? cats.map((c) => `<button data-g="${grp.g}" data-c="${c.k}">${c.label} <small>${c.count}</small></button>`).join("") : "");
+      return `<h4>${esc(grp.label)}</h4>
+        <button data-g="${grp.g}" data-c="">Todas las ${esc(grp.label.toLowerCase())} <small>${n}</small></button>` +
+        (cats.length > 1 ? cats.map((c) => `<button data-g="${grp.g}" data-c="${esc(c.k)}">${esc(c.label)} <small>${c.count}</small></button>`).join("") : "");
     }).join("");
   filters.addEventListener("click", (e) => {
     const b = e.target.closest("button");

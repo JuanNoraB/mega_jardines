@@ -361,7 +361,8 @@ if __name__ == "__main__":
         sys.stdin.reconfigure(encoding="utf-8")
         cli()
     else:
-        missing = [k for k in ("WA_TOKEN", "WA_PHONE_ID") if not CFG[k]]
+        # WA_APP_SECRET es obligatorio: sin él no se puede comprobar que los mensajes vienen de Meta
+        missing = [k for k in ("WA_TOKEN", "WA_PHONE_ID", "WA_APP_SECRET") if not CFG[k]]
         if missing and not CFG["DRY_RUN"]:
             sys.exit(f"Faltan variables de entorno: {', '.join(missing)} (ver .env.example)")
         print(f"Bot escuchando en el puerto {CFG['PORT']} · {len(PRODUCTS)} productos · {len(SERVICES)} servicios", flush=True)
