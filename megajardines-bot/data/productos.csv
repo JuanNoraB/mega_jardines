@@ -1,7 +1,7 @@
 "id","nombre","grupo","categoria","precio","imagen"
 "M_4","Jardinera Jumbo Gris",,,"85.00","img/productos/M_4.jpg"
 "M_5","Jardinera Jumbo Blanca",,,"85.00","img/productos/M_5.jpg"
-"P_187","Agapanto",,,"4.50","img/productos/P_187.jpg"
+"P_187","Agapanto",,,"1.00","img/productos/P_187.jpg"
 "P_241","Ají",,,"1.00","img/productos/P_241.jpg"
 "P_242","Ají Redondo",,,"1.00","img/productos/P_242.jpg"
 "P_141","Alba Olorosa",,,"1.25","img/productos/P_141.jpg"
@@ -570,3 +570,4 @@
 "A_6","Cascajo de coco",,,"",""
 "A_7","Cascajo de pomes",,,"",""
 "A_8","Aireadores",,,"",""
+"P_999","NUEVO OBONO FINO",,,"3.50",""
