@@ -15,8 +15,10 @@ const MJ = {
     "Arena de río lavada", "Cascajo de coco", "Cascajo de pomes", "Aireadores"],
 };
 
+// api.whatsapp.com directo (no wa.me): la redirección de wa.me cambia los emojis por "�" en computadora.
+const WA_SEND = "https://api.whatsapp.com/send";
 const waLink = (text, phone = MJ.waMain) =>
-  `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+  `${WA_SEND}?phone=${phone}&text=${encodeURIComponent(text)}`;
 
 // ---------- Métricas (Google Analytics 4). track() no hace nada si no hay ga4Id.
 window.dataLayer = window.dataLayer || [];
@@ -39,7 +41,7 @@ document.addEventListener("click", (e) => {
   const a = e.target.closest("a[href]");
   if (!a) return;
   const href = a.getAttribute("href");
-  if (href.startsWith("https://wa.me/")) track("contact_whatsapp", { link_text: a.textContent.trim().slice(0, 60) || "botón flotante", page: location.pathname });
+  if (href.startsWith(WA_SEND)) track("contact_whatsapp", { link_text: a.textContent.trim().slice(0, 60) || "botón flotante", page: location.pathname });
   else if (href.startsWith("mailto:")) track("contact_email", { page: location.pathname });
   else if (/instagram\.com|facebook\.com/.test(href)) track("social_click", { network: href.includes("instagram") ? "instagram" : "facebook" });
 });
